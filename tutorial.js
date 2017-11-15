@@ -1,4 +1,4 @@
-// Web Socket App
+// Chat app using web tutorial
 
 // Imports
 var express = require('express'); // used to make an Express app
@@ -8,7 +8,7 @@ var io = require('socket.io')(http);
 
 // home page
 app.get('/', function (req, resp, next) {
-  resp.sendFile(__dirname + '/views/chat.html');
+  resp.sendFile(__dirname + '/views/tutorial.html');
 });
 
 io.on('connection', function(socket) {

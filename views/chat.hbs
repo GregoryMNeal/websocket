@@ -1,0 +1,44 @@
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Chat Room</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="/css/styles.css">
+  </head>
+  <body>
+    <!-- accept input, execute the send_message function -->
+    <input id="message" onkeypress="send_message(event)">
+    <!-- display chat message as preformatted text -->
+    <pre id="chat-box"></pre>
+    <!-- JavaScript -->
+    <script src="/socket-io/socket.io.js"></script>
+    <script>
+      var server = io();
+      var room; // chat room retrievevd from URL as query parameter
+      // connect to server and join chat room
+      server.on('connect', function (s) {
+        console.log('connected');
+        var url = new URL(location.href);
+        room = url.searchParams.get('room') || 'main-room';
+        server.emit('join-room', room);
+      });
+      // receive message from server
+      server.on('chat-msg', function (msg) {
+        var chat = document.getElementById("chat-box");
+        chat.insertAdjacentHTML('beforeend', '\n' + msg);
+      });
+      // send message to server
+      function send_message (event) {
+        var char = event.which || event.keyCode;
+        if (char == '13') { // enter key
+          var msg = document.getElementById("message"); // user input
+          // sending message
+          server.emit('incoming', {room: room, msg: msg.value});
+          // initialize message
+          msg.value = '';
+        }
+      }
+    </script>
+  </body>
+</html>
